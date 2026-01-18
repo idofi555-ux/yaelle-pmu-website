@@ -1167,7 +1167,53 @@
    CLIENT DETAIL & TREATMENT HISTORY
    =================================== */
 .modal-md {
-    max-width: 500px;
+    max-width: 520px;
+}
+
+/* Form styles in modals */
+.modal .form-group {
+    margin-bottom: 16px;
+}
+
+.modal .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--charcoal);
+}
+
+.modal .form-group input,
+.modal .form-group select,
+.modal .form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--blush-pink);
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all var(--transition-fast);
+}
+
+.modal .form-group input:focus,
+.modal .form-group select:focus,
+.modal .form-group textarea:focus {
+    outline: none;
+    border-color: var(--rose-gold);
+    background: white;
+}
+
+.modal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.modal .form-row .form-group {
+    margin-bottom: 0;
+    min-width: 0;
 }
 
 .client-detail {
