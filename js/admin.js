@@ -2,7 +2,10 @@
    YAELLE PMU ART - Admin Dashboard
    =================================== */
 
+console.log('Admin.js loaded');
+
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM ready, initializing...');
     initLogin();
     initDashboard();
     initTabs();
@@ -11,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initClients();
     initSettings();
     initModals();
+    console.log('All init functions called');
 });
 
 /* ===================================
@@ -19,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 const ADMIN_PASSWORD = 'yaelle2025';
 const SESSION_KEY = 'yaelle_admin_session';
 
-const { STORAGE_KEYS, SERVICES, getAppointments, getClients } = window.YaelleBooking || {};
+// Get booking utilities from main booking module
+const BookingUtils = window.YaelleBooking || {};
+const { getAppointments, getClients } = BookingUtils;
 
 /* ===================================
    STATE
@@ -33,40 +39,56 @@ let selectedAppointment = null;
    LOGIN
    =================================== */
 function initLogin() {
+    console.log('initLogin called');
     const loginForm = document.getElementById('loginForm');
     const loginScreen = document.getElementById('loginScreen');
     const dashboard = document.getElementById('dashboard');
     const logoutBtn = document.getElementById('logoutBtn');
 
+    console.log('Elements found:', { loginForm: !!loginForm, loginScreen: !!loginScreen, dashboard: !!dashboard });
+
     // Check existing session
     if (sessionStorage.getItem(SESSION_KEY)) {
+        console.log('Existing session found');
         loginScreen.classList.add('hidden');
         dashboard.classList.add('active');
         loadDashboardData();
     }
 
     // Login form submit
-    loginForm?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const password = document.getElementById('password').value;
-        const errorEl = document.getElementById('loginError');
+    if (loginForm) {
+        console.log('Adding submit listener to form');
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted!');
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
 
-        if (password === ADMIN_PASSWORD) {
-            sessionStorage.setItem(SESSION_KEY, 'true');
-            loginScreen.classList.add('hidden');
-            dashboard.classList.add('active');
-            loadDashboardData();
-        } else {
-            errorEl.textContent = 'Invalid password. Please try again.';
-            document.getElementById('password').value = '';
-        }
-    });
+            console.log('Password entered:', password, 'Expected:', ADMIN_PASSWORD);
+
+            if (password === ADMIN_PASSWORD) {
+                console.log('Password correct! Logging in...');
+                sessionStorage.setItem(SESSION_KEY, 'true');
+                loginScreen.classList.add('hidden');
+                dashboard.classList.add('active');
+                loadDashboardData();
+            } else {
+                console.log('Password incorrect');
+                errorEl.textContent = 'Invalid password. Please try again.';
+                document.getElementById('password').value = '';
+            }
+        });
+    } else {
+        console.error('Login form not found!');
+    }
 
     // Logout
-    logoutBtn?.addEventListener('click', () => {
-        sessionStorage.removeItem(SESSION_KEY);
-        location.reload();
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            sessionStorage.removeItem(SESSION_KEY);
+            location.reload();
+        });
+    }
 }
 
 /* ===================================
@@ -225,7 +247,7 @@ function renderAppointments() {
         const date = new Date(apt.date);
         const day = date.getDate();
         const month = date.toLocaleDateString('en-US', { month: 'short' });
-        const service = SERVICES?.[apt.service]?.name || apt.service;
+        const service = BookingUtils.SERVICES?.[apt.service]?.name || apt.service;
 
         return `
             <div class="appointment-card" data-id="${apt.id}">
@@ -274,7 +296,7 @@ function viewAppointment(id) {
 
     selectedAppointment = apt;
     const detailEl = document.getElementById('appointmentDetail');
-    const service = SERVICES?.[apt.service] || { name: apt.service, price: 0 };
+    const service = BookingUtils.SERVICES?.[apt.service] || { name: apt.service, price: 0 };
 
     detailEl.innerHTML = `
         <div class="detail-header">
@@ -338,7 +360,7 @@ function updateStatus(id, status) {
 
     if (index >= 0) {
         appointments[index].status = status;
-        localStorage.setItem(STORAGE_KEYS.APPOINTMENTS, JSON.stringify(appointments));
+        localStorage.setItem(BookingUtils.STORAGE_KEYS.APPOINTMENTS, JSON.stringify(appointments));
         updateStats();
         renderAppointments();
         closeAppointmentModal();
@@ -352,7 +374,7 @@ function deleteAppointment(id) {
         () => {
             let appointments = getAppointments?.() || [];
             appointments = appointments.filter(a => a.id !== id);
-            localStorage.setItem(STORAGE_KEYS.APPOINTMENTS, JSON.stringify(appointments));
+            localStorage.setItem(BookingUtils.STORAGE_KEYS.APPOINTMENTS, JSON.stringify(appointments));
             updateStats();
             renderAppointments();
         }
@@ -550,8 +572,8 @@ function initSettings() {
             'Clear All Data',
             'Are you sure you want to delete all appointments and clients? This action cannot be undone.',
             () => {
-                localStorage.removeItem(STORAGE_KEYS.APPOINTMENTS);
-                localStorage.removeItem(STORAGE_KEYS.CLIENTS);
+                localStorage.removeItem(BookingUtils.STORAGE_KEYS.APPOINTMENTS);
+                localStorage.removeItem(BookingUtils.STORAGE_KEYS.CLIENTS);
                 loadDashboardData();
             }
         );
@@ -581,8 +603,8 @@ function renderSettings() {
 
     // Render services
     const servicesList = document.getElementById('servicesList');
-    if (servicesList && SERVICES) {
-        servicesList.innerHTML = Object.entries(SERVICES).map(([key, service]) => `
+    if (servicesList && BookingUtils.SERVICES) {
+        servicesList.innerHTML = Object.entries(BookingUtils.SERVICES).map(([key, service]) => `
             <div class="service-row">
                 <span class="service-name">${service.name}</span>
                 <span class="service-duration">${service.duration}</span>
@@ -603,7 +625,7 @@ function exportToCSV() {
     const headers = ['ID', 'Service', 'First Name', 'Last Name', 'Email', 'Phone', 'Date', 'Time', 'Status', 'Notes', 'Created At'];
     const rows = appointments.map(a => [
         a.id,
-        SERVICES?.[a.service]?.name || a.service,
+        BookingUtils.SERVICES?.[a.service]?.name || a.service,
         a.firstName,
         a.lastName,
         a.email,

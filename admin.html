@@ -14,7 +14,7 @@
     <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-container">
-            <a href="index.html" class="logo">yaelle</a>
+            <a href="index.html" class="logo"><img src="images/logo.jpg" alt="Yaelle" class="logo-img"></a>
             <h1>Admin Dashboard</h1>
             <p>Enter your password to access the dashboard</p>
             <form class="login-form" id="loginForm">
@@ -34,7 +34,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <a href="index.html" class="logo">yaelle</a>
+                <a href="index.html" class="logo"><img src="images/logo.jpg" alt="Yaelle" class="logo-img"></a>
                 <span class="sidebar-subtitle">Admin</span>
             </div>
             <nav class="sidebar-nav">
@@ -247,7 +247,57 @@
         </div>
     </div>
 
-    <script src="js/booking.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="js/booking.js?v=4"></script>
+    <script>
+        // Inline login handler as backup
+        (function() {
+            const ADMIN_PASSWORD = 'yaelle2025';
+            const SESSION_KEY = 'yaelle_admin_session';
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const loginForm = document.getElementById('loginForm');
+                const loginScreen = document.getElementById('loginScreen');
+                const dashboard = document.getElementById('dashboard');
+                const logoutBtn = document.getElementById('logoutBtn');
+
+                // Check existing session
+                if (sessionStorage.getItem(SESSION_KEY)) {
+                    loginScreen.classList.add('hidden');
+                    dashboard.classList.add('active');
+                }
+
+                if (loginForm) {
+                    loginForm.onsubmit = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const password = document.getElementById('password').value;
+                        const errorEl = document.getElementById('loginError');
+
+                        if (password === ADMIN_PASSWORD) {
+                            sessionStorage.setItem(SESSION_KEY, 'true');
+                            loginScreen.classList.add('hidden');
+                            dashboard.classList.add('active');
+                            if (typeof loadDashboardData === 'function') {
+                                loadDashboardData();
+                            }
+                        } else {
+                            errorEl.textContent = 'Invalid password. Please try again.';
+                            document.getElementById('password').value = '';
+                        }
+                        return false;
+                    };
+                }
+
+                if (logoutBtn) {
+                    logoutBtn.onclick = function() {
+                        sessionStorage.removeItem(SESSION_KEY);
+                        location.reload();
+                    };
+                }
+            });
+        })();
+    </script>
+    <script src="js/admin.js?v=4"></script>
 </body>
 </html>
