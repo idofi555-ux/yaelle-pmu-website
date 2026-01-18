@@ -1011,3 +1011,636 @@
 .sidebar-overlay.active {
     display: block;
 }
+
+/* ===================================
+   MARKETING TAB
+   =================================== */
+.marketing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.marketing-section {
+    background: white;
+    padding: 32px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.marketing-section.full-width {
+    grid-column: 1 / -1;
+}
+
+.marketing-section h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: var(--charcoal);
+}
+
+.post-form,
+.email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.image-upload-area {
+    border: 2px dashed var(--blush-pink);
+    border-radius: var(--radius-md);
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.image-upload-area:hover {
+    border-color: var(--rose-gold);
+    background: var(--champagne);
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--warm-gray);
+}
+
+.upload-placeholder svg {
+    color: var(--blush-pink);
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+}
+
+.image-preview.hidden {
+    display: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.post-card {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.post-card:hover {
+    background: var(--champagne);
+}
+
+.post-thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    background: var(--blush-pink);
+    flex-shrink: 0;
+}
+
+.post-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.post-info h4 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--charcoal);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-info p {
+    font-size: 12px;
+    color: var(--warm-gray);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.post-date {
+    font-size: 11px;
+    color: var(--light-gray);
+    margin-top: 4px;
+}
+
+.email-stats {
+    font-size: 13px;
+    color: var(--rose-gold);
+    font-weight: 500;
+}
+
+/* ===================================
+   CLIENT DETAIL & TREATMENT HISTORY
+   =================================== */
+.modal-md {
+    max-width: 500px;
+}
+
+.client-detail {
+    text-align: left;
+}
+
+.client-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--blush-pink);
+}
+
+.client-header .client-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+}
+
+.client-header h2 {
+    font-size: 24px;
+    margin-bottom: 4px;
+    color: var(--charcoal);
+}
+
+.client-header .client-contact {
+    font-size: 14px;
+}
+
+.client-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.treatment-history {
+    margin-top: 24px;
+}
+
+.treatment-history h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: var(--charcoal);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.treatment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.treatment-card {
+    background: var(--cream);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: start;
+}
+
+.treatment-date-badge {
+    text-align: center;
+    padding: 8px 12px;
+    background: white;
+    border-radius: var(--radius-sm);
+    min-width: 60px;
+}
+
+.treatment-date-badge .day {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--charcoal);
+    line-height: 1;
+}
+
+.treatment-date-badge .month {
+    font-size: 10px;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+}
+
+.treatment-info h4 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+}
+
+.treatment-info p {
+    font-size: 12px;
+    color: var(--warm-gray);
+}
+
+.treatment-photos {
+    display: flex;
+    gap: 8px;
+}
+
+.treatment-photos img {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.treatment-price {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    color: var(--rose-gold);
+}
+
+.empty-treatments {
+    text-align: center;
+    padding: 32px;
+    color: var(--warm-gray);
+}
+
+/* Photo Upload Grid */
+.photo-upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.photo-upload {
+    position: relative;
+}
+
+.photo-placeholder {
+    border: 2px dashed var(--blush-pink);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--warm-gray);
+}
+
+.photo-placeholder:hover {
+    border-color: var(--rose-gold);
+    background: var(--champagne);
+}
+
+.photo-preview {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.photo-preview.hidden {
+    display: none;
+}
+
+/* Post Preview */
+.post-preview {
+    text-align: center;
+}
+
+.post-preview img,
+.post-preview-content img.preview-image {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+}
+
+.post-preview h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: var(--charcoal);
+}
+
+.post-preview p {
+    color: var(--warm-gray);
+    line-height: 1.7;
+}
+
+.post-preview-content {
+    text-align: left;
+}
+
+.preview-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--blush-pink);
+    font-size: 13px;
+    color: var(--warm-gray);
+}
+
+/* Post Card Content */
+.post-card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.post-card-content h4 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--charcoal);
+}
+
+.post-card-content p {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+}
+
+.post-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.post-status {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.post-status.status-draft {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.post-status.status-published {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.post-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* Email Preview */
+.email-preview-content {
+    text-align: left;
+}
+
+.email-preview-content .email-header {
+    background: var(--cream);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+}
+
+.email-preview-content .email-body {
+    padding: 16px;
+}
+
+.email-preview-content .email-body p {
+    margin-bottom: 16px;
+    line-height: 1.7;
+}
+
+.attached-post {
+    background: var(--cream);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin: 20px 0;
+    text-align: center;
+}
+
+.attached-post img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+}
+
+.attached-post h4 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--charcoal);
+}
+
+.attached-post p {
+    font-size: 14px;
+    color: var(--warm-gray);
+}
+
+/* Treatment Cards in Client Detail */
+.treatments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.treatments-list .treatment-card {
+    background: var(--cream);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    display: block;
+    position: relative;
+}
+
+.treatments-list .treatment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.treatments-list .treatment-header h4 {
+    font-size: 16px;
+    color: var(--charcoal);
+    font-weight: 500;
+}
+
+.treatments-list .treatment-date {
+    font-size: 13px;
+    color: var(--warm-gray);
+}
+
+.treatments-list .treatment-price {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    color: var(--rose-gold);
+    margin-bottom: 8px;
+}
+
+.treatments-list .treatment-notes {
+    font-size: 14px;
+    color: var(--warm-gray);
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.treatments-list .treatment-photos {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.treatments-list .treatment-photo {
+    text-align: center;
+}
+
+.treatments-list .treatment-photo span {
+    display: block;
+    font-size: 11px;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.treatments-list .treatment-photo img {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform var(--transition-fast);
+}
+
+.treatments-list .treatment-photo img:hover {
+    transform: scale(1.05);
+}
+
+.treatments-list .next-appointment {
+    font-size: 13px;
+    color: var(--rose-gold);
+    font-weight: 500;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--blush-pink);
+}
+
+.btn-delete-treatment {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 12px;
+    color: #c44;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+}
+
+.btn-delete-treatment:hover {
+    opacity: 1;
+}
+
+/* Client Avatar Large */
+.client-avatar.large {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+}
+
+/* Client Header Info */
+.client-header-info {
+    flex: 1;
+}
+
+.client-header-info h2 {
+    font-size: 24px;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+}
+
+.client-header-info p {
+    font-size: 14px;
+    color: var(--warm-gray);
+    margin-bottom: 2px;
+}
+
+/* Client card clickable */
+.client-card {
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.client-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Responsive Marketing */
+@media (max-width: 991px) {
+    .marketing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .client-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .client-actions {
+        flex-direction: column;
+    }
+
+    .treatment-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .treatment-date-badge {
+        justify-self: center;
+    }
+
+    .treatment-photos {
+        justify-content: center;
+    }
+
+    .photo-upload-grid {
+        grid-template-columns: 1fr;
+    }
+}

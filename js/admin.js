@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initClients();
     initSettings();
     initModals();
+    initMarketing();
+    initTreatments();
     console.log('All init functions called');
 });
 
@@ -22,6 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
    =================================== */
 const ADMIN_PASSWORD = 'yaelle2025';
 const SESSION_KEY = 'yaelle_admin_session';
+const TREATMENTS_KEY = 'yaelle_treatments';
+const POSTS_KEY = 'yaelle_posts';
 
 // Get booking utilities from main booking module
 const BookingUtils = window.YaelleBooking || {};
@@ -34,6 +38,10 @@ let currentFilter = 'all';
 let currentView = 'list';
 let currentMonth = new Date();
 let selectedAppointment = null;
+let selectedClient = null;
+let currentPostImage = null;
+let currentBeforePhoto = null;
+let currentAfterPhoto = null;
 
 /* ===================================
    LOGIN
@@ -139,6 +147,8 @@ function loadDashboardData() {
     renderAppointments();
     renderClients();
     renderSettings();
+    renderPosts();
+    updateEmailRecipientCount();
 }
 
 /* ===================================
@@ -537,12 +547,16 @@ function renderClients(searchTerm = '') {
 
     emptyEl?.classList.add('hidden');
 
+    // Get treatments for each client
+    const treatments = getTreatments();
+
     listEl.innerHTML = clients.map(client => {
         const initials = (client.firstName[0] + client.lastName[0]).toUpperCase();
-        const appointmentCount = client.appointments?.length || 0;
+        const clientTreatments = treatments.filter(t => t.clientId === client.id);
+        const treatmentCount = clientTreatments.length;
 
         return `
-            <div class="client-card">
+            <div class="client-card" data-client-id="${client.id}">
                 <div class="client-avatar">${initials}</div>
                 <div class="client-info">
                     <h4>${client.firstName} ${client.lastName}</h4>
@@ -551,12 +565,19 @@ function renderClients(searchTerm = '') {
                     </div>
                 </div>
                 <div class="client-stats">
-                    <span class="stat-number">${appointmentCount}</span>
-                    <span class="stat-label">Appointments</span>
+                    <span class="stat-number">${treatmentCount}</span>
+                    <span class="stat-label">Treatments</span>
                 </div>
             </div>
         `;
     }).join('');
+
+    // Add click handlers to client cards
+    listEl.querySelectorAll('.client-card').forEach(card => {
+        card.addEventListener('click', () => {
+            viewClient(card.dataset.clientId);
+        });
+    });
 }
 
 /* ===================================
@@ -710,3 +731,579 @@ function formatTime(timeString) {
     const displayHour = hour % 12 || 12;
     return `${displayHour}:${minutes} ${ampm}`;
 }
+
+/* ===================================
+   TREATMENTS
+   =================================== */
+function getTreatments() {
+    return JSON.parse(localStorage.getItem(TREATMENTS_KEY) || '[]');
+}
+
+function saveTreatments(treatments) {
+    localStorage.setItem(TREATMENTS_KEY, JSON.stringify(treatments));
+}
+
+function initTreatments() {
+    const treatmentForm = document.getElementById('treatmentForm');
+    const treatmentModalClose = document.getElementById('treatmentModalClose');
+    const cancelTreatment = document.getElementById('cancelTreatment');
+
+    // Photo upload handlers
+    document.querySelectorAll('.photo-placeholder').forEach(placeholder => {
+        placeholder.addEventListener('click', () => {
+            const targetId = placeholder.dataset.target;
+            document.getElementById(targetId)?.click();
+        });
+    });
+
+    document.getElementById('beforePhoto')?.addEventListener('change', (e) => {
+        handlePhotoUpload(e, 'beforePreview', 'before');
+    });
+
+    document.getElementById('afterPhoto')?.addEventListener('change', (e) => {
+        handlePhotoUpload(e, 'afterPreview', 'after');
+    });
+
+    // Form submission
+    treatmentForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveTreatment();
+    });
+
+    // Close modal handlers
+    treatmentModalClose?.addEventListener('click', closeTreatmentModal);
+    cancelTreatment?.addEventListener('click', closeTreatmentModal);
+}
+
+function handlePhotoUpload(e, previewId, type) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const dataUrl = event.target.result;
+        const preview = document.getElementById(previewId);
+        const placeholder = preview.previousElementSibling;
+
+        preview.src = dataUrl;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+
+        if (type === 'before') {
+            currentBeforePhoto = dataUrl;
+        } else {
+            currentAfterPhoto = dataUrl;
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function openTreatmentModal(clientId) {
+    selectedClient = clientId;
+    document.getElementById('treatmentClientId').value = clientId;
+    document.getElementById('treatmentDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('treatmentModal').classList.add('active');
+}
+
+function closeTreatmentModal() {
+    document.getElementById('treatmentModal').classList.remove('active');
+    document.getElementById('treatmentForm').reset();
+
+    // Reset photo previews
+    ['beforePreview', 'afterPreview'].forEach(id => {
+        const preview = document.getElementById(id);
+        preview.classList.add('hidden');
+        preview.src = '';
+        preview.previousElementSibling.classList.remove('hidden');
+    });
+
+    currentBeforePhoto = null;
+    currentAfterPhoto = null;
+    selectedClient = null;
+}
+
+function saveTreatment() {
+    const clientId = document.getElementById('treatmentClientId').value;
+    const service = document.getElementById('treatmentService').value;
+    const date = document.getElementById('treatmentDate').value;
+    const price = document.getElementById('treatmentPrice').value;
+    const notes = document.getElementById('treatmentNotes').value;
+    const nextAppointment = document.getElementById('nextAppointment').value;
+
+    if (!clientId || !service || !date) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    const treatment = {
+        id: 'treatment_' + Date.now(),
+        clientId,
+        service,
+        date,
+        price: price ? parseFloat(price) : 0,
+        notes,
+        beforePhoto: currentBeforePhoto,
+        afterPhoto: currentAfterPhoto,
+        nextAppointment,
+        createdAt: new Date().toISOString()
+    };
+
+    const treatments = getTreatments();
+    treatments.push(treatment);
+    saveTreatments(treatments);
+
+    closeTreatmentModal();
+    viewClient(clientId); // Refresh client detail
+    renderClients(); // Update treatment count
+}
+
+function viewClient(clientId) {
+    const clients = getClients?.() || [];
+    const client = clients.find(c => c.id === clientId);
+
+    if (!client) return;
+
+    selectedClient = client;
+    const treatments = getTreatments().filter(t => t.clientId === clientId);
+    const detailEl = document.getElementById('clientDetail');
+
+    const initials = (client.firstName[0] + client.lastName[0]).toUpperCase();
+    const serviceName = (service) => {
+        const serviceMap = {
+            'microblading': 'Microblading',
+            'nanoblading': 'Nanoblading',
+            'lip-blushing': 'Lip Blushing',
+            'lash-liner': 'Lash Liner',
+            'brow-lamination': 'Brow Lamination',
+            'touch-up': 'Touch Up',
+            'consultation': 'Consultation'
+        };
+        return serviceMap[service] || service;
+    };
+
+    detailEl.innerHTML = `
+        <div class="client-header">
+            <div class="client-avatar large">${initials}</div>
+            <div class="client-header-info">
+                <h2>${client.firstName} ${client.lastName}</h2>
+                <p>${client.email}</p>
+                <p>${client.phone}</p>
+            </div>
+            <button class="btn btn-primary" onclick="openTreatmentModal('${clientId}')">
+                + Add Treatment
+            </button>
+        </div>
+
+        <div class="treatment-history">
+            <h3>Treatment History</h3>
+            ${treatments.length === 0 ? `
+                <div class="empty-treatments">
+                    <p>No treatments recorded yet.</p>
+                </div>
+            ` : `
+                <div class="treatments-list">
+                    ${treatments.sort((a, b) => new Date(b.date) - new Date(a.date)).map(t => `
+                        <div class="treatment-card">
+                            <div class="treatment-header">
+                                <h4>${serviceName(t.service)}</h4>
+                                <span class="treatment-date">${formatDate(t.date)}</span>
+                            </div>
+                            ${t.price ? `<p class="treatment-price">€${t.price}</p>` : ''}
+                            ${t.notes ? `<p class="treatment-notes">${t.notes}</p>` : ''}
+                            ${(t.beforePhoto || t.afterPhoto) ? `
+                                <div class="treatment-photos">
+                                    ${t.beforePhoto ? `
+                                        <div class="treatment-photo">
+                                            <span>Before</span>
+                                            <img src="${t.beforePhoto}" alt="Before">
+                                        </div>
+                                    ` : ''}
+                                    ${t.afterPhoto ? `
+                                        <div class="treatment-photo">
+                                            <span>After</span>
+                                            <img src="${t.afterPhoto}" alt="After">
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                            ${t.nextAppointment ? `
+                                <p class="next-appointment">Next appointment: ${formatDate(t.nextAppointment)}</p>
+                            ` : ''}
+                            <button class="btn-delete-treatment" onclick="deleteTreatment('${t.id}', '${clientId}')">Delete</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `}
+        </div>
+    `;
+
+    document.getElementById('clientModal').classList.add('active');
+    document.getElementById('clientModalClose')?.addEventListener('click', closeClientModal);
+}
+
+function closeClientModal() {
+    document.getElementById('clientModal').classList.remove('active');
+    selectedClient = null;
+}
+
+function deleteTreatment(treatmentId, clientId) {
+    showConfirmDialog(
+        'Delete Treatment',
+        'Are you sure you want to delete this treatment record?',
+        () => {
+            let treatments = getTreatments();
+            treatments = treatments.filter(t => t.id !== treatmentId);
+            saveTreatments(treatments);
+            viewClient(clientId);
+            renderClients();
+        }
+    );
+}
+
+// Make treatment functions globally available
+window.openTreatmentModal = openTreatmentModal;
+window.deleteTreatment = deleteTreatment;
+
+/* ===================================
+   MARKETING
+   =================================== */
+function getPosts() {
+    return JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
+}
+
+function savePosts(posts) {
+    localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+}
+
+function initMarketing() {
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const postImageInput = document.getElementById('postImage');
+    const savePostBtn = document.getElementById('savePostBtn');
+    const previewPostBtn = document.getElementById('previewPostBtn');
+    const previewEmailBtn = document.getElementById('previewEmailBtn');
+    const sendEmailBtn = document.getElementById('sendEmailBtn');
+    const emailRecipients = document.getElementById('emailRecipients');
+    const postPreviewClose = document.getElementById('postPreviewClose');
+
+    // Image upload area click
+    imageUploadArea?.addEventListener('click', () => {
+        postImageInput?.click();
+    });
+
+    // Image file selection
+    postImageInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            currentPostImage = event.target.result;
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
+
+            preview.src = currentPostImage;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Save post
+    savePostBtn?.addEventListener('click', savePost);
+
+    // Preview post
+    previewPostBtn?.addEventListener('click', previewPost);
+
+    // Preview email
+    previewEmailBtn?.addEventListener('click', previewEmail);
+
+    // Send email
+    sendEmailBtn?.addEventListener('click', sendEmailCampaign);
+
+    // Update recipient count on change
+    emailRecipients?.addEventListener('change', updateEmailRecipientCount);
+
+    // Close preview modal
+    postPreviewClose?.addEventListener('click', () => {
+        document.getElementById('postPreviewModal').classList.remove('active');
+    });
+}
+
+function savePost() {
+    const title = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+
+    if (!title || !content) {
+        alert('Please enter a title and content for your post.');
+        return;
+    }
+
+    const post = {
+        id: 'post_' + Date.now(),
+        title,
+        content,
+        image: currentPostImage,
+        status: 'draft',
+        createdAt: new Date().toISOString()
+    };
+
+    const posts = getPosts();
+    posts.unshift(post);
+    savePosts(posts);
+
+    // Clear form
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postContent').value = '';
+    document.getElementById('imagePreview').classList.add('hidden');
+    document.getElementById('imagePreview').src = '';
+    document.getElementById('uploadPlaceholder').classList.remove('hidden');
+    currentPostImage = null;
+
+    renderPosts();
+    updateAttachPostOptions();
+
+    alert('Post saved successfully!');
+}
+
+function previewPost() {
+    const title = document.getElementById('postTitle').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+
+    if (!title && !content) {
+        alert('Please enter some content to preview.');
+        return;
+    }
+
+    const previewEl = document.getElementById('postPreview');
+    previewEl.innerHTML = `
+        <div class="post-preview-content">
+            ${currentPostImage ? `<img src="${currentPostImage}" alt="Post image" class="preview-image">` : ''}
+            <h2>${title || 'Untitled Post'}</h2>
+            <p>${content.replace(/\n/g, '<br>') || 'No content'}</p>
+            <div class="preview-footer">
+                <span>Yaelle PMU Art</span>
+                <span>${new Date().toLocaleDateString()}</span>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('postPreviewModal').classList.add('active');
+}
+
+function renderPosts() {
+    const postsListEl = document.getElementById('postsList');
+    const emptyPostsEl = document.getElementById('emptyPosts');
+    const posts = getPosts();
+
+    if (!postsListEl) return;
+
+    if (posts.length === 0) {
+        postsListEl.innerHTML = '';
+        emptyPostsEl?.classList.remove('hidden');
+        return;
+    }
+
+    emptyPostsEl?.classList.add('hidden');
+
+    postsListEl.innerHTML = posts.map(post => `
+        <div class="post-card" data-post-id="${post.id}">
+            ${post.image ? `<img src="${post.image}" alt="Post image" class="post-thumbnail">` : ''}
+            <div class="post-card-content">
+                <h4>${post.title}</h4>
+                <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</p>
+                <div class="post-meta">
+                    <span class="post-status status-${post.status}">${post.status}</span>
+                    <span class="post-date">${new Date(post.createdAt).toLocaleDateString()}</span>
+                </div>
+            </div>
+            <div class="post-actions">
+                <button class="action-btn" onclick="viewPost('${post.id}')" title="View">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/>
+                    </svg>
+                </button>
+                <button class="action-btn delete" onclick="deletePost('${post.id}')" title="Delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                        <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `).join('');
+
+    updateAttachPostOptions();
+}
+
+function viewPost(postId) {
+    const posts = getPosts();
+    const post = posts.find(p => p.id === postId);
+
+    if (!post) return;
+
+    const previewEl = document.getElementById('postPreview');
+    previewEl.innerHTML = `
+        <div class="post-preview-content">
+            ${post.image ? `<img src="${post.image}" alt="Post image" class="preview-image">` : ''}
+            <h2>${post.title}</h2>
+            <p>${post.content.replace(/\n/g, '<br>')}</p>
+            <div class="preview-footer">
+                <span>Yaelle PMU Art</span>
+                <span>${new Date(post.createdAt).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('postPreviewModal').classList.add('active');
+}
+
+function deletePost(postId) {
+    showConfirmDialog(
+        'Delete Post',
+        'Are you sure you want to delete this post?',
+        () => {
+            let posts = getPosts();
+            posts = posts.filter(p => p.id !== postId);
+            savePosts(posts);
+            renderPosts();
+        }
+    );
+}
+
+function updateAttachPostOptions() {
+    const attachSelect = document.getElementById('attachPost');
+    if (!attachSelect) return;
+
+    const posts = getPosts();
+    attachSelect.innerHTML = '<option value="">No attachment</option>' +
+        posts.map(post => `<option value="${post.id}">${post.title}</option>`).join('');
+}
+
+function updateEmailRecipientCount() {
+    const recipientType = document.getElementById('emailRecipients')?.value || 'all';
+    const clients = getClients?.() || [];
+    const countEl = document.getElementById('recipientCount');
+
+    let count = 0;
+    const now = new Date();
+    const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+
+    switch (recipientType) {
+        case 'all':
+            count = clients.length;
+            break;
+        case 'recent':
+            count = clients.filter(c => {
+                const lastVisit = new Date(c.createdAt || 0);
+                return lastVisit >= threeMonthsAgo;
+            }).length;
+            break;
+        case 'inactive':
+            count = clients.filter(c => {
+                const lastVisit = new Date(c.createdAt || 0);
+                return lastVisit < sixMonthsAgo;
+            }).length;
+            break;
+    }
+
+    if (countEl) {
+        countEl.textContent = `${count} recipient${count !== 1 ? 's' : ''} selected`;
+    }
+}
+
+function previewEmail() {
+    const subject = document.getElementById('emailSubject').value.trim();
+    const body = document.getElementById('emailBody').value.trim();
+    const attachPostId = document.getElementById('attachPost').value;
+
+    if (!subject || !body) {
+        alert('Please enter a subject and body for your email.');
+        return;
+    }
+
+    let attachedPost = null;
+    if (attachPostId) {
+        attachedPost = getPosts().find(p => p.id === attachPostId);
+    }
+
+    const previewEl = document.getElementById('postPreview');
+    previewEl.innerHTML = `
+        <div class="email-preview-content">
+            <div class="email-header">
+                <strong>Subject:</strong> ${subject}
+            </div>
+            <div class="email-body">
+                <p>Dear Client,</p>
+                <p>${body.replace(/\n/g, '<br>')}</p>
+                ${attachedPost ? `
+                    <div class="attached-post">
+                        ${attachedPost.image ? `<img src="${attachedPost.image}" alt="Post image">` : ''}
+                        <h4>${attachedPost.title}</h4>
+                        <p>${attachedPost.content}</p>
+                    </div>
+                ` : ''}
+                <p>Best regards,<br>Yaelle PMU Art</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('postPreviewModal').classList.add('active');
+}
+
+function sendEmailCampaign() {
+    const subject = document.getElementById('emailSubject').value.trim();
+    const body = document.getElementById('emailBody').value.trim();
+    const recipientType = document.getElementById('emailRecipients').value;
+
+    if (!subject || !body) {
+        alert('Please enter a subject and body for your email.');
+        return;
+    }
+
+    const clients = getClients?.() || [];
+    let recipients = [];
+    const now = new Date();
+    const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+
+    switch (recipientType) {
+        case 'all':
+            recipients = clients;
+            break;
+        case 'recent':
+            recipients = clients.filter(c => new Date(c.createdAt || 0) >= threeMonthsAgo);
+            break;
+        case 'inactive':
+            recipients = clients.filter(c => new Date(c.createdAt || 0) < sixMonthsAgo);
+            break;
+    }
+
+    if (recipients.length === 0) {
+        alert('No recipients match your selection.');
+        return;
+    }
+
+    // In a real app, this would send emails via a backend API
+    // For now, we'll simulate success and show a summary
+    showConfirmDialog(
+        'Send Email Campaign',
+        `Send this email to ${recipients.length} client${recipients.length !== 1 ? 's' : ''}?`,
+        () => {
+            // Generate mailto links for each recipient (limited functionality)
+            const emailList = recipients.map(c => c.email).join(',');
+
+            // Create a summary modal
+            alert(`Email campaign prepared for ${recipients.length} recipients!\n\nSubject: ${subject}\n\nNote: In production, this would be sent via an email service. For now, you can copy the recipient list:\n\n${emailList}`);
+
+            // Clear form
+            document.getElementById('emailSubject').value = '';
+            document.getElementById('emailBody').value = '';
+            document.getElementById('attachPost').value = '';
+        }
+    );
+}
+
+// Make marketing functions globally available
+window.viewPost = viewPost;
+window.deletePost = deletePost;

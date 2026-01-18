@@ -54,6 +54,13 @@
                     </svg>
                     Clients
                 </button>
+                <button class="nav-item" data-tab="marketing">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    Marketing
+                </button>
                 <button class="nav-item" data-tab="settings">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"/>
@@ -195,6 +202,105 @@
                 </div>
             </div>
 
+            <!-- Marketing Tab -->
+            <div class="tab-content" id="marketingTab">
+                <div class="marketing-grid">
+                    <!-- Create Post Section -->
+                    <div class="marketing-section">
+                        <h3>Create Post</h3>
+                        <p class="settings-note">Create promotional content for social media or email.</p>
+                        <form id="postForm" class="post-form">
+                            <div class="form-group">
+                                <label for="postTitle">Title</label>
+                                <input type="text" id="postTitle" placeholder="e.g., Summer Special Offer!">
+                            </div>
+                            <div class="form-group">
+                                <label for="postContent">Content</label>
+                                <textarea id="postContent" rows="4" placeholder="Write your promotional message..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="postImage">Add Image</label>
+                                <div class="image-upload-area" id="imageUploadArea">
+                                    <input type="file" id="postImage" accept="image/*" hidden>
+                                    <div class="upload-placeholder" id="uploadPlaceholder">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <polyline points="21,15 16,10 5,21"/>
+                                        </svg>
+                                        <span>Click to upload image</span>
+                                    </div>
+                                    <img id="imagePreview" class="image-preview hidden" alt="Preview">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="savePostBtn">Save Draft</button>
+                                <button type="button" class="btn btn-primary" id="previewPostBtn">Preview Post</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Saved Posts Section -->
+                    <div class="marketing-section">
+                        <h3>Saved Posts</h3>
+                        <p class="settings-note">Your draft and published posts.</p>
+                        <div class="posts-list" id="postsList">
+                            <!-- Posts will be rendered here -->
+                        </div>
+                        <div class="empty-state hidden" id="emptyPosts">
+                            <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+                                <rect x="8" y="8" width="48" height="48" rx="4"/>
+                                <line x1="20" y1="24" x2="44" y2="24"/>
+                                <line x1="20" y1="32" x2="44" y2="32"/>
+                                <line x1="20" y1="40" x2="36" y2="40"/>
+                            </svg>
+                            <h4>No Posts Yet</h4>
+                            <p>Create your first promotional post above.</p>
+                        </div>
+                    </div>
+
+                    <!-- Email Campaign Section -->
+                    <div class="marketing-section full-width">
+                        <h3>Email Campaign</h3>
+                        <p class="settings-note">Send promotional emails to your clients.</p>
+                        <form id="emailForm" class="email-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="emailSubject">Subject Line</label>
+                                    <input type="text" id="emailSubject" placeholder="e.g., Exclusive Offer Just for You!">
+                                </div>
+                                <div class="form-group">
+                                    <label for="emailRecipients">Recipients</label>
+                                    <select id="emailRecipients">
+                                        <option value="all">All Clients</option>
+                                        <option value="recent">Recent Clients (Last 3 months)</option>
+                                        <option value="inactive">Inactive Clients (6+ months)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailBody">Email Body</label>
+                                <textarea id="emailBody" rows="6" placeholder="Write your email message..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Attach Post</label>
+                                <select id="attachPost">
+                                    <option value="">No attachment</option>
+                                    <!-- Posts will be populated here -->
+                                </select>
+                            </div>
+                            <div class="email-stats">
+                                <span id="recipientCount">0 recipients selected</span>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" id="previewEmailBtn">Preview Email</button>
+                                <button type="button" class="btn btn-primary" id="sendEmailBtn">Send Campaign</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- Settings Tab -->
             <div class="tab-content" id="settingsTab">
                 <div class="settings-section">
@@ -247,7 +353,91 @@
         </div>
     </div>
 
-    <script src="js/booking.js?v=5"></script>
+    <!-- Client Detail Modal -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content modal-lg">
+            <button class="modal-close" id="clientModalClose">&times;</button>
+            <div class="client-detail" id="clientDetail">
+                <!-- Client details will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Treatment Modal -->
+    <div class="modal" id="treatmentModal">
+        <div class="modal-content modal-md">
+            <button class="modal-close" id="treatmentModalClose">&times;</button>
+            <h3>Add Treatment Record</h3>
+            <form id="treatmentForm">
+                <input type="hidden" id="treatmentClientId">
+                <div class="form-group">
+                    <label for="treatmentService">Service</label>
+                    <select id="treatmentService" required>
+                        <option value="">Select service...</option>
+                        <option value="microblading">Microblading</option>
+                        <option value="nanoblading">Nanoblading</option>
+                        <option value="lip-blushing">Lip Blushing</option>
+                        <option value="lash-liner">Lash Liner</option>
+                        <option value="brow-lamination">Brow Lamination</option>
+                        <option value="touch-up">Touch Up</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="treatmentDate">Date</label>
+                        <input type="date" id="treatmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="treatmentPrice">Price (EUR)</label>
+                        <input type="number" id="treatmentPrice" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="treatmentNotes">Notes</label>
+                    <textarea id="treatmentNotes" rows="3" placeholder="Treatment notes, color used, client preferences..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Before/After Photos</label>
+                    <div class="photo-upload-grid">
+                        <div class="photo-upload">
+                            <input type="file" id="beforePhoto" accept="image/*" hidden>
+                            <div class="photo-placeholder" data-target="beforePhoto">
+                                <span>+ Before</span>
+                            </div>
+                            <img id="beforePreview" class="photo-preview hidden" alt="Before">
+                        </div>
+                        <div class="photo-upload">
+                            <input type="file" id="afterPhoto" accept="image/*" hidden>
+                            <div class="photo-placeholder" data-target="afterPhoto">
+                                <span>+ After</span>
+                            </div>
+                            <img id="afterPreview" class="photo-preview hidden" alt="After">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nextAppointment">Schedule Next Appointment</label>
+                    <input type="date" id="nextAppointment" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelTreatment">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Treatment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post Preview Modal -->
+    <div class="modal" id="postPreviewModal">
+        <div class="modal-content modal-md">
+            <button class="modal-close" id="postPreviewClose">&times;</button>
+            <div class="post-preview" id="postPreview">
+                <!-- Post preview will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/booking.js?v=6"></script>
     <script>
         // Inline login handler as backup
         (function() {
@@ -298,6 +488,6 @@
             });
         })();
     </script>
-    <script src="js/admin.js?v=5"></script>
+    <script src="js/admin.js?v=6"></script>
 </body>
 </html>
