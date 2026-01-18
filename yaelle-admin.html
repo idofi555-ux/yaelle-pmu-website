@@ -209,6 +209,26 @@
                     <div class="marketing-section">
                         <h3>Create Post</h3>
                         <p class="settings-note">Create promotional content for social media or email.</p>
+
+                        <!-- AI Generation -->
+                        <div class="ai-generator">
+                            <div class="ai-header">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                                <span>AI Assistant (Claude Opus 4.5)</span>
+                            </div>
+                            <div class="ai-input-row">
+                                <input type="text" id="aiPrompt" placeholder="e.g., Summer discount on microblading, new lip blushing technique...">
+                                <button type="button" class="btn btn-ai" id="generatePostBtn">
+                                    <span class="btn-text">Generate</span>
+                                    <span class="btn-loading hidden">Generating...</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <form id="postForm" class="post-form">
                             <div class="form-group">
                                 <label for="postTitle">Title</label>
@@ -263,6 +283,26 @@
                     <div class="marketing-section full-width">
                         <h3>Email Campaign</h3>
                         <p class="settings-note">Send promotional emails to your clients.</p>
+
+                        <!-- AI Generation for Email -->
+                        <div class="ai-generator">
+                            <div class="ai-header">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                                <span>AI Assistant (Claude Opus 4.5)</span>
+                            </div>
+                            <div class="ai-input-row">
+                                <input type="text" id="aiEmailPrompt" placeholder="e.g., Invite inactive clients back with 20% off...">
+                                <button type="button" class="btn btn-ai" id="generateEmailBtn">
+                                    <span class="btn-text">Generate</span>
+                                    <span class="btn-loading hidden">Generating...</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <form id="emailForm" class="email-form">
                             <div class="form-row">
                                 <div class="form-group">

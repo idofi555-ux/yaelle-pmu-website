@@ -1308,3 +1308,137 @@ function sendEmailCampaign() {
 window.viewPost = viewPost;
 window.deletePost = deletePost;
 
+/* ===================================
+   AI CONTENT GENERATION
+   =================================== */
+function initAI() {
+    const generatePostBtn = document.getElementById('generatePostBtn');
+    const generateEmailBtn = document.getElementById('generateEmailBtn');
+
+    generatePostBtn?.addEventListener('click', generatePost);
+    generateEmailBtn?.addEventListener('click', generateEmail);
+}
+
+async function generatePost() {
+    const prompt = document.getElementById('aiPrompt').value.trim();
+    const btn = document.getElementById('generatePostBtn');
+
+    if (!prompt) {
+        alert('Please enter a topic or idea for your post.');
+        return;
+    }
+
+    setButtonLoading(btn, true);
+
+    try {
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, type: 'post' })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.content) {
+            parseAndFillPostContent(data.content);
+        } else {
+            alert('Failed to generate content: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('AI Generation error:', error);
+        alert('Failed to connect to AI service. Please try again.');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+}
+
+async function generateEmail() {
+    const prompt = document.getElementById('aiEmailPrompt').value.trim();
+    const btn = document.getElementById('generateEmailBtn');
+
+    if (!prompt) {
+        alert('Please enter a topic or idea for your email.');
+        return;
+    }
+
+    setButtonLoading(btn, true);
+
+    try {
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, type: 'email' })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.content) {
+            parseAndFillEmailContent(data.content);
+        } else {
+            alert('Failed to generate content: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('AI Generation error:', error);
+        alert('Failed to connect to AI service. Please try again.');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+}
+
+function setButtonLoading(btn, loading) {
+    const textEl = btn.querySelector('.btn-text');
+    const loadingEl = btn.querySelector('.btn-loading');
+
+    if (loading) {
+        btn.disabled = true;
+        textEl?.classList.add('hidden');
+        loadingEl?.classList.remove('hidden');
+    } else {
+        btn.disabled = false;
+        textEl?.classList.remove('hidden');
+        loadingEl?.classList.add('hidden');
+    }
+}
+
+function parseAndFillPostContent(content) {
+    // Parse the AI response
+    const titleMatch = content.match(/TITLE:\s*(.+?)(?=\n|CONTENT:)/s);
+    const contentMatch = content.match(/CONTENT:\s*(.+?)(?=HASHTAGS:|$)/s);
+    const hashtagsMatch = content.match(/HASHTAGS:\s*(.+?)$/s);
+
+    const title = titleMatch ? titleMatch[1].trim() : '';
+    let body = contentMatch ? contentMatch[1].trim() : content;
+    const hashtags = hashtagsMatch ? hashtagsMatch[1].trim() : '';
+
+    // Combine body and hashtags
+    if (hashtags) {
+        body += '\n\n' + hashtags;
+    }
+
+    // Fill the form fields
+    document.getElementById('postTitle').value = title;
+    document.getElementById('postContent').value = body;
+
+    // Clear the AI prompt
+    document.getElementById('aiPrompt').value = '';
+}
+
+function parseAndFillEmailContent(content) {
+    // Parse the AI response
+    const subjectMatch = content.match(/SUBJECT:\s*(.+?)(?=\n|BODY:)/s);
+    const bodyMatch = content.match(/BODY:\s*(.+?)$/s);
+
+    const subject = subjectMatch ? subjectMatch[1].trim() : '';
+    const body = bodyMatch ? bodyMatch[1].trim() : content;
+
+    // Fill the form fields
+    document.getElementById('emailSubject').value = subject;
+    document.getElementById('emailBody').value = body;
+
+    // Clear the AI prompt
+    document.getElementById('aiEmailPrompt').value = '';
+}
+
+// Initialize AI on load
+document.addEventListener('DOMContentLoaded', initAI);
+
