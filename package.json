@@ -1,0 +1,11 @@
+{
+  "name": "yaelle-pmu-website",
+  "version": "1.0.0",
+  "description": "Yaelle PMU Art - Permanent Makeup Studio in Limassol, Cyprus",
+  "scripts": {
+    "start": "npx serve -s . -l ${PORT:-3000}"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
