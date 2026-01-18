@@ -1334,13 +1334,24 @@ async function generatePost() {
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt, type: 'post' })
+            body: JSON.stringify({ prompt, type: 'post', includeImage: true })
         });
 
         const data = await response.json();
 
         if (data.success && data.content) {
             parseAndFillPostContent(data.content);
+
+            // If image was generated, set it in the form
+            if (data.image) {
+                currentPostImage = data.image;
+                const preview = document.getElementById('imagePreview');
+                const placeholder = document.getElementById('uploadPlaceholder');
+
+                preview.src = data.image;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            }
         } else {
             alert('Failed to generate content: ' + (data.error || 'Unknown error'));
         }
