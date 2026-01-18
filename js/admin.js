@@ -518,6 +518,17 @@ function initClients() {
     searchInput?.addEventListener('input', (e) => {
         renderClients(e.target.value);
     });
+
+    // Add client button
+    document.getElementById('addClientBtn')?.addEventListener('click', () => openAddClientModal());
+
+    // Client form
+    const clientForm = document.getElementById('clientForm');
+    clientForm?.addEventListener('submit', saveClient);
+
+    // Modal close handlers
+    document.getElementById('addClientModalClose')?.addEventListener('click', closeAddClientModal);
+    document.getElementById('cancelClientForm')?.addEventListener('click', closeAddClientModal);
 }
 
 function renderClients(searchTerm = '') {
@@ -563,10 +574,23 @@ function renderClients(searchTerm = '') {
                     <div class="client-contact">
                         ${client.email} | ${client.phone}
                     </div>
+                    ${client.notes ? `<div class="client-notes-badge">${client.notes.substring(0, 50)}${client.notes.length > 50 ? '...' : ''}</div>` : ''}
                 </div>
                 <div class="client-stats">
                     <span class="stat-number">${treatmentCount}</span>
                     <span class="stat-label">Treatments</span>
+                </div>
+                <div class="client-card-actions">
+                    <button class="action-btn" onclick="editClient('${client.id}', event)" title="Edit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                    </button>
+                    <button class="action-btn delete" onclick="deleteClient('${client.id}', event)" title="Delete">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         `;
@@ -574,11 +598,144 @@ function renderClients(searchTerm = '') {
 
     // Add click handlers to client cards
     listEl.querySelectorAll('.client-card').forEach(card => {
-        card.addEventListener('click', () => {
-            viewClient(card.dataset.clientId);
+        card.addEventListener('click', (e) => {
+            // Don't trigger if clicking on action buttons
+            if (!e.target.closest('.client-card-actions')) {
+                viewClient(card.dataset.clientId);
+            }
         });
     });
 }
+
+/* ===================================
+   CLIENT MANAGEMENT
+   =================================== */
+function openAddClientModal(clientId = null) {
+    const modal = document.getElementById('addClientModal');
+    const title = document.getElementById('clientFormTitle');
+    const form = document.getElementById('clientForm');
+
+    form.reset();
+    document.getElementById('clientFormId').value = '';
+
+    if (clientId) {
+        // Edit mode
+        const clients = getClients?.() || [];
+        const client = clients.find(c => c.id === clientId);
+        if (client) {
+            title.textContent = 'Edit Client';
+            document.getElementById('clientFormId').value = client.id;
+            document.getElementById('clientFirstName').value = client.firstName;
+            document.getElementById('clientLastName').value = client.lastName;
+            document.getElementById('clientEmail').value = client.email;
+            document.getElementById('clientPhone').value = client.phone;
+            document.getElementById('clientNotes').value = client.notes || '';
+        }
+    } else {
+        title.textContent = 'Add New Client';
+    }
+
+    modal.classList.add('active');
+}
+
+function closeAddClientModal() {
+    document.getElementById('addClientModal').classList.remove('active');
+}
+
+function saveClient(e) {
+    e.preventDefault();
+
+    const clientId = document.getElementById('clientFormId').value;
+    const firstName = document.getElementById('clientFirstName').value.trim();
+    const lastName = document.getElementById('clientLastName').value.trim();
+    const email = document.getElementById('clientEmail').value.trim();
+    const phone = document.getElementById('clientPhone').value.trim();
+    const notes = document.getElementById('clientNotes').value.trim();
+
+    if (!firstName || !lastName || !email || !phone) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    // Get existing clients
+    const CLIENTS_KEY = 'yaelle_clients';
+    let clients = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
+
+    if (clientId) {
+        // Update existing client
+        const index = clients.findIndex(c => c.id === clientId);
+        if (index !== -1) {
+            clients[index] = {
+                ...clients[index],
+                firstName,
+                lastName,
+                email,
+                phone,
+                notes,
+                updatedAt: new Date().toISOString()
+            };
+        }
+    } else {
+        // Check for duplicate email
+        if (clients.some(c => c.email.toLowerCase() === email.toLowerCase())) {
+            alert('A client with this email already exists.');
+            return;
+        }
+
+        // Add new client
+        const newClient = {
+            id: 'client_' + Date.now(),
+            firstName,
+            lastName,
+            email,
+            phone,
+            notes,
+            appointments: [],
+            createdAt: new Date().toISOString()
+        };
+        clients.push(newClient);
+    }
+
+    localStorage.setItem(CLIENTS_KEY, JSON.stringify(clients));
+    closeAddClientModal();
+    renderClients();
+    updateStats();
+}
+
+function editClient(clientId, e) {
+    e.stopPropagation();
+    openAddClientModal(clientId);
+}
+
+function deleteClient(clientId, e) {
+    e.stopPropagation();
+
+    const clients = getClients?.() || [];
+    const client = clients.find(c => c.id === clientId);
+
+    showConfirmDialog(
+        'Delete Client',
+        `Are you sure you want to delete ${client?.firstName} ${client?.lastName}? This will also delete all their treatment records.`,
+        () => {
+            const CLIENTS_KEY = 'yaelle_clients';
+            let updatedClients = clients.filter(c => c.id !== clientId);
+            localStorage.setItem(CLIENTS_KEY, JSON.stringify(updatedClients));
+
+            // Also delete treatments for this client
+            let treatments = getTreatments();
+            treatments = treatments.filter(t => t.clientId !== clientId);
+            saveTreatments(treatments);
+
+            renderClients();
+            updateStats();
+        }
+    );
+}
+
+// Make client management functions globally available
+window.openAddClientModal = openAddClientModal;
+window.editClient = editClient;
+window.deleteClient = deleteClient;
 
 /* ===================================
    SETTINGS

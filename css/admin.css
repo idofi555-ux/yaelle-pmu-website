@@ -1683,15 +1683,61 @@
     display: none !important;
 }
 
+/* Clients Header */
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.clients-header .search-bar {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.clients-header .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
 /* Client card clickable */
 .client-card {
     cursor: pointer;
     transition: all var(--transition-fast);
+    position: relative;
 }
 
 .client-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+}
+
+/* Client card actions */
+.client-card-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.client-card:hover .client-card-actions {
+    opacity: 1;
+}
+
+.client-card-actions .action-btn {
+    padding: 6px;
+}
+
+/* Client notes badge */
+.client-notes-badge {
+    font-size: 11px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+    font-style: italic;
 }
 
 /* Responsive Marketing */
