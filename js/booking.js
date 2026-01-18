@@ -14,12 +14,11 @@
     };
 
     const SERVICES = {
-        'microblading': { name: 'Microblading', price: 350, duration: '2-3 hours' },
-        'nanoblading': { name: 'Nanoblading', price: 400, duration: '2-3 hours' },
-        'lip-blushing': { name: 'Lip Blushing', price: 350, duration: '2-3 hours' },
-        'lash-liner': { name: 'Lash Liner', price: 250, duration: '1.5-2 hours' },
-        'brow-lamination': { name: 'Brow Lamination', price: 80, duration: '45-60 mins' },
-        'consultation': { name: 'Free Consultation', price: 0, duration: '30 mins' }
+        'microblading': { name: 'Microblading', price: 350 },
+        'lip-blushing': { name: 'Lip Blushing', price: 300 },
+        'tattoo-removal': { name: 'Brows Tattoo Removal', price: 150 },
+        'carbon-laser': { name: 'Peeling Carbon Laser', price: 200 },
+        'consultation': { name: 'Consultation', price: 0 }
     };
 
     /* ===================================

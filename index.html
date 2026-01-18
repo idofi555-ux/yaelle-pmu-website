@@ -138,19 +138,9 @@
                     "itemOffered": {
                         "@type": "Service",
                         "name": "Microblading",
-                        "description": "Semi-permanent eyebrow enhancement using fine, hair-like strokes"
+                        "description": "Semi-permanent eyebrow enhancement using fine, hair-like strokes, including one retouch"
                     },
                     "price": "350",
-                    "priceCurrency": "EUR"
-                },
-                {
-                    "@type": "Offer",
-                    "itemOffered": {
-                        "@type": "Service",
-                        "name": "Nanoblading",
-                        "description": "Ultra-fine technique creating natural, delicate hair strokes"
-                    },
-                    "price": "400",
                     "priceCurrency": "EUR"
                 },
                 {
@@ -158,29 +148,29 @@
                     "itemOffered": {
                         "@type": "Service",
                         "name": "Lip Blushing",
-                        "description": "Semi-permanent lip color enhancement"
+                        "description": "Semi-permanent lip color enhancement, including one retouch"
                     },
-                    "price": "350",
+                    "price": "300",
                     "priceCurrency": "EUR"
                 },
                 {
                     "@type": "Offer",
                     "itemOffered": {
                         "@type": "Service",
-                        "name": "Lash Liner",
-                        "description": "Permanent eyeliner for lash enhancement"
+                        "name": "Brows Tattoo Removal",
+                        "description": "Professional removal of old or unwanted eyebrow tattoos"
                     },
-                    "price": "250",
+                    "price": "150",
                     "priceCurrency": "EUR"
                 },
                 {
                     "@type": "Offer",
                     "itemOffered": {
                         "@type": "Service",
-                        "name": "Brow Lamination",
-                        "description": "Non-invasive brow restructuring treatment"
+                        "name": "Peeling Carbon Laser",
+                        "description": "Advanced carbon laser treatment for skin rejuvenation"
                     },
-                    "price": "80",
+                    "price": "200",
                     "priceCurrency": "EUR"
                 }
             ]
@@ -221,10 +211,10 @@
             },
             {
                 "@type": "Question",
-                "name": "What is the difference between microblading and nanoblading?",
+                "name": "Does the microblading price include a retouch?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nanoblading uses an even finer needle than microblading, creating more delicate and natural-looking hair strokes. It's ideal for those wanting a softer, more subtle result."
+                    "text": "Yes, the microblading price of €350 includes one retouch session, typically done 6-8 weeks after the initial treatment for optimal results."
                 }
             }
         ]
@@ -255,17 +245,18 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero" id="home" aria-label="Welcome to Yaelle PMU Art">
-        <div class="hero-bg-pattern"></div>
-        <div class="hero-container">
-            <div class="hero-content">
+    <section class="hero hero-with-bg" id="home" aria-label="Welcome to Yaelle PMU Art">
+        <div class="hero-bg-image" style="background-image: url('images/hero-brows.jpg');"></div>
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-container hero-centered">
+            <div class="hero-content hero-content-centered">
                 <span class="hero-badge">
                     <span class="badge-icon">★</span>
                     Certified Phibrows & Sviato Artist
                 </span>
                 <span class="hero-subtitle">Natural Semi Permanent Makeup</span>
                 <h1 class="hero-title" itemprop="slogan">
-                    Enhance Your <span class="text-gradient">Natural Beauty</span>
+                    Enhance Your <span class="text-gradient-light">Natural Beauty</span>
                 </h1>
                 <p class="hero-description">
                     Transform your mornings with flawless brows, perfectly tinted lips, and defined eyes.
@@ -287,10 +278,10 @@
                 </div>
                 <div class="hero-buttons">
                     <a href="#booking" class="btn btn-primary btn-lg">
-                        <span>Book Free Consultation</span>
+                        <span>Book Appointment</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
                     </a>
-                    <a href="#services" class="btn btn-secondary btn-lg">
+                    <a href="#services" class="btn btn-secondary-light btn-lg">
                         <span>View Services</span>
                     </a>
                 </div>
@@ -298,28 +289,6 @@
                     <div class="trust-rating">
                         <div class="stars">★★★★★</div>
                         <span>5.0 rating from 127+ reviews</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="hero-image-wrapper">
-                    <div class="hero-image-frame">
-                        <img
-                            src="images/hero-brows.jpg"
-                            alt="Professional microblading treatment for natural-looking eyebrows in Limassol, Cyprus"
-                            width="600"
-                            height="750"
-                            loading="eager"
-                            fetchpriority="high"
-                        >
-                    </div>
-                    <div class="hero-floating-card card-1">
-                        <span class="floating-number">190+</span>
-                        <span class="floating-label">Transformations</span>
-                    </div>
-                    <div class="hero-floating-card card-2">
-                        <span class="floating-emoji">✨</span>
-                        <span class="floating-text">Natural Results</span>
                     </div>
                 </div>
             </div>
@@ -354,37 +323,12 @@
                             natural-looking, well-defined brows that last 12-24 months.
                         </p>
                         <div class="service-details">
-                            <span class="service-duration">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                                2-3 hours
-                            </span>
-                            <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                                <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="350">350</span>
-                            </span>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Nanoblading -->
-                <article class="service-card" itemscope itemtype="https://schema.org/Service">
-                    <div class="service-image">
-                        <img src="images/gallery-brows-2.jpg" alt="Nanoblading ultra-fine eyebrow enhancement for delicate results" width="400" height="300" loading="lazy">
-                        <div class="service-badge">Premium</div>
-                    </div>
-                    <div class="service-content">
-                        <h3 class="service-title" itemprop="name">Nanoblading</h3>
-                        <p class="service-description" itemprop="description">
-                            Ultra-fine technique creating the most natural, delicate hair strokes.
-                            Perfect for achieving a soft, subtle brow enhancement.
-                        </p>
-                        <div class="service-details">
-                            <span class="service-duration">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                                2-3 hours
-                            </span>
-                            <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                                <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="400">400</span>
-                            </span>
+                            <div class="service-price-wrapper">
+                                <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                                    <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="350">350</span>
+                                </span>
+                                <span class="service-retouch">including one retouch</span>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -401,59 +345,55 @@
                             a beautiful wash of color, like a perfect tinted lip balm.
                         </p>
                         <div class="service-details">
-                            <span class="service-duration">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                                2-3 hours
-                            </span>
-                            <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                                <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="350">350</span>
-                            </span>
+                            <div class="service-price-wrapper">
+                                <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                                    <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="300">300</span>
+                                </span>
+                                <span class="service-retouch">including one retouch</span>
+                            </div>
                         </div>
                     </div>
                 </article>
 
-                <!-- Lash Liner -->
+                <!-- Brows Tattoo Removal -->
                 <article class="service-card" itemscope itemtype="https://schema.org/Service">
                     <div class="service-image">
-                        <img src="images/gallery-brows-3.jpg" alt="Permanent lash liner treatment for defined eyes" width="400" height="300" loading="lazy">
+                        <img src="images/gallery-brows-3.jpg" alt="Brows tattoo removal treatment" width="400" height="300" loading="lazy">
                     </div>
                     <div class="service-content">
-                        <h3 class="service-title" itemprop="name">Lash Liner</h3>
+                        <h3 class="service-title" itemprop="name">Brows Tattoo Removal</h3>
                         <p class="service-description" itemprop="description">
-                            Permanent eyeliner that defines your eyes with a subtle lash enhancement
-                            line, creating the illusion of fuller, darker lashes.
+                            Professional removal of old or unwanted eyebrow tattoos using advanced techniques.
+                            Safe and effective treatment for a fresh start.
                         </p>
                         <div class="service-details">
-                            <span class="service-duration">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                                1.5-2 hours
-                            </span>
-                            <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                                <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="250">250</span>
-                            </span>
+                            <div class="service-price-wrapper">
+                                <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                                    <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="150">150</span>
+                                </span>
+                                <span class="service-retouch">per session</span>
+                            </div>
                         </div>
                     </div>
                 </article>
 
-                <!-- Brow Lamination -->
+                <!-- Peeling Carbon Laser -->
                 <article class="service-card" itemscope itemtype="https://schema.org/Service">
                     <div class="service-image">
-                        <img src="images/gallery-brows-4.jpg" alt="Brow lamination treatment for perfectly shaped eyebrows" width="400" height="300" loading="lazy">
+                        <img src="images/gallery-brows-4.jpg" alt="Peeling carbon laser treatment for skin rejuvenation" width="400" height="300" loading="lazy">
                     </div>
                     <div class="service-content">
-                        <h3 class="service-title" itemprop="name">Brow Lamination</h3>
+                        <h3 class="service-title" itemprop="name">Peeling Carbon Laser</h3>
                         <p class="service-description" itemprop="description">
-                            A non-invasive treatment that restructures brow hairs, keeping them in
-                            a desired shape for up to 6-8 weeks. Perfect fluffy brows.
+                            Advanced carbon laser treatment for deep skin cleansing, pore refinement,
+                            and skin rejuvenation. Leaves skin glowing and refreshed.
                         </p>
                         <div class="service-details">
-                            <span class="service-duration">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-                                45-60 mins
-                            </span>
-                            <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                                <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="80">80</span>
-                            </span>
+                            <div class="service-price-wrapper">
+                                <span class="service-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                                    <span itemprop="priceCurrency" content="EUR">&euro;</span><span itemprop="price" content="200">200</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -461,14 +401,13 @@
                 <!-- Book CTA Card -->
                 <article class="service-card service-card-cta">
                     <div class="cta-content">
-                        <span class="cta-badge">Free</span>
                         <h3 class="service-title">Consultation</h3>
                         <p class="service-description">
-                            Not sure which service is right for you? Book a free 30-minute consultation
+                            Not sure which service is right for you? Book a consultation
                             to discuss your goals and find the perfect treatment.
                         </p>
                         <a href="#booking" class="btn btn-primary">
-                            Book Free Consultation
+                            Book Consultation
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
                         </a>
                     </div>
@@ -491,7 +430,6 @@
                 <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All Work</button>
                 <button class="filter-btn" data-filter="microblading" role="tab" aria-selected="false">Microblading</button>
                 <button class="filter-btn" data-filter="lip-blushing" role="tab" aria-selected="false">Lip Blushing</button>
-                <button class="filter-btn" data-filter="lash-liner" role="tab" aria-selected="false">Lash Liner</button>
             </div>
             <div class="gallery-grid" role="tabpanel">
                 <figure class="gallery-item" data-category="microblading">
@@ -753,11 +691,10 @@
                             <select id="service" name="service" required aria-required="true">
                                 <option value="">Choose a service...</option>
                                 <option value="microblading">Microblading - €350</option>
-                                <option value="nanoblading">Nanoblading - €400</option>
-                                <option value="lip-blushing">Lip Blushing - €350</option>
-                                <option value="lash-liner">Lash Liner - €250</option>
-                                <option value="brow-lamination">Brow Lamination - €80</option>
-                                <option value="consultation">Free Consultation</option>
+                                <option value="lip-blushing">Lip Blushing - €300</option>
+                                <option value="tattoo-removal">Brows Tattoo Removal - €150/session</option>
+                                <option value="carbon-laser">Peeling Carbon Laser - €200</option>
+                                <option value="consultation">Consultation</option>
                             </select>
                         </div>
                         <div class="form-row">
@@ -856,10 +793,9 @@
                     <h4>Services</h4>
                     <ul>
                         <li><a href="#services">Microblading</a></li>
-                        <li><a href="#services">Nanoblading</a></li>
                         <li><a href="#services">Lip Blushing</a></li>
-                        <li><a href="#services">Lash Liner</a></li>
-                        <li><a href="#services">Brow Lamination</a></li>
+                        <li><a href="#services">Brows Tattoo Removal</a></li>
+                        <li><a href="#services">Peeling Carbon Laser</a></li>
                     </ul>
                 </div>
                 <div class="footer-contact">
