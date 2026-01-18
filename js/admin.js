@@ -1307,3 +1307,4 @@ function sendEmailCampaign() {
 // Make marketing functions globally available
 window.viewPost = viewPost;
 window.deletePost = deletePost;
+
