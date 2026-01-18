@@ -1,0 +1,15 @@
+# Robots.txt for Yaelle PMU Art
+# https://yaelle.eu
+
+User-agent: *
+Allow: /
+
+# Block admin pages
+Disallow: /yaelle-admin.html
+Disallow: /admin
+
+# Sitemap location
+Sitemap: https://yaelle.eu/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

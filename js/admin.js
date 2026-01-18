@@ -1471,9 +1471,11 @@ window.deletePost = deletePost;
 function initAI() {
     const generatePostBtn = document.getElementById('generatePostBtn');
     const generateEmailBtn = document.getElementById('generateEmailBtn');
+    const viewLogsBtn = document.getElementById('viewLogsBtn');
 
     generatePostBtn?.addEventListener('click', generatePost);
     generateEmailBtn?.addEventListener('click', generateEmail);
+    viewLogsBtn?.addEventListener('click', viewServerLogs);
 }
 
 async function generatePost() {
@@ -1486,6 +1488,7 @@ async function generatePost() {
     }
 
     setButtonLoading(btn, true);
+    console.log('[AI] Starting post generation with prompt:', prompt);
 
     try {
         const response = await fetch('/api/generate', {
@@ -1495,30 +1498,107 @@ async function generatePost() {
         });
 
         const data = await response.json();
+        console.log('[AI] Response received:', {
+            success: data.success,
+            hasContent: !!data.content,
+            hasImage: !!data.image,
+            imageSize: data.image ? data.image.length : 0,
+            requestId: data.requestId,
+            debug: data.debug
+        });
 
         if (data.success && data.content) {
             parseAndFillPostContent(data.content);
 
             // If image was generated, set it in the form
             if (data.image) {
+                console.log('[AI] Setting image in form, size:', data.image.length);
                 currentPostImage = data.image;
                 const preview = document.getElementById('imagePreview');
                 const placeholder = document.getElementById('uploadPlaceholder');
 
-                preview.src = data.image;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
+                if (preview && placeholder) {
+                    preview.src = data.image;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    console.log('[AI] Image preview updated successfully');
+                } else {
+                    console.error('[AI] Preview elements not found:', { preview: !!preview, placeholder: !!placeholder });
+                }
+            } else {
+                console.warn('[AI] No image in response. Debug info:', data.debug);
+                if (data.debug?.imageError) {
+                    console.error('[AI] Image error:', data.debug.imageError);
+                }
             }
         } else {
+            console.error('[AI] Generation failed:', data);
             alert('Failed to generate content: ' + (data.error || 'Unknown error'));
         }
     } catch (error) {
-        console.error('AI Generation error:', error);
-        alert('Failed to connect to AI service. Please try again.');
+        console.error('[AI] Generation error:', error);
+        alert('Failed to connect to AI service. Please try again.\n\nError: ' + error.message);
     } finally {
         setButtonLoading(btn, false);
     }
 }
+
+async function viewServerLogs() {
+    try {
+        const response = await fetch('/api/logs?lines=50');
+        const data = await response.json();
+
+        if (data.logs && data.logs.length > 0) {
+            const logsHtml = data.logs.map(log => {
+                const level = log.level || 'INFO';
+                const levelClass = level === 'ERROR' ? 'log-error' : level === 'DEBUG' ? 'log-debug' : 'log-info';
+                return `<div class="log-entry ${levelClass}">
+                    <span class="log-time">${log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : ''}</span>
+                    <span class="log-level">[${level}]</span>
+                    <span class="log-message">${log.message || log.raw || ''}</span>
+                    ${log.data ? `<pre class="log-data">${JSON.stringify(log.data, null, 2)}</pre>` : ''}
+                </div>`;
+            }).join('');
+
+            // Create or update logs modal
+            let logsModal = document.getElementById('logsModal');
+            if (!logsModal) {
+                logsModal = document.createElement('div');
+                logsModal.id = 'logsModal';
+                logsModal.className = 'modal';
+                logsModal.innerHTML = `
+                    <div class="modal-content logs-modal-content">
+                        <button class="modal-close" onclick="document.getElementById('logsModal').classList.remove('active')">&times;</button>
+                        <h3>Server Logs</h3>
+                        <div id="logsContent" class="logs-content"></div>
+                        <button class="btn btn-secondary" onclick="clearServerLogs()">Clear Logs</button>
+                    </div>
+                `;
+                document.body.appendChild(logsModal);
+            }
+
+            document.getElementById('logsContent').innerHTML = logsHtml;
+            logsModal.classList.add('active');
+        } else {
+            alert('No logs available yet.');
+        }
+    } catch (error) {
+        console.error('Failed to fetch logs:', error);
+        alert('Failed to fetch server logs: ' + error.message);
+    }
+}
+
+async function clearServerLogs() {
+    try {
+        await fetch('/api/logs', { method: 'DELETE' });
+        document.getElementById('logsContent').innerHTML = '<p>Logs cleared.</p>';
+    } catch (error) {
+        alert('Failed to clear logs: ' + error.message);
+    }
+}
+
+window.viewServerLogs = viewServerLogs;
+window.clearServerLogs = clearServerLogs;
 
 async function generateEmail() {
     const prompt = document.getElementById('aiEmailPrompt').value.trim();

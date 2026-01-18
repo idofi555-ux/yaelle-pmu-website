@@ -1824,3 +1824,98 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ===================================
+   SERVER LOGS MODAL
+   =================================== */
+.logs-modal-content {
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.logs-modal-content h3 {
+    margin-bottom: 16px;
+    color: var(--charcoal);
+}
+
+.logs-content {
+    flex: 1;
+    overflow-y: auto;
+    background: #1e1e1e;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    max-height: 500px;
+}
+
+.log-entry {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    color: #ccc;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-time {
+    color: #888;
+    margin-right: 8px;
+}
+
+.log-level {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.log-info .log-level {
+    color: #58a6ff;
+}
+
+.log-error .log-level {
+    color: #f85149;
+}
+
+.log-debug .log-level {
+    color: #8b949e;
+}
+
+.log-message {
+    color: #e6e6e6;
+}
+
+.log-data {
+    margin-top: 8px;
+    padding: 8px;
+    background: #2d2d2d;
+    border-radius: 4px;
+    color: #7ee787;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.logs-modal-content .btn-secondary {
+    margin-top: 16px;
+    align-self: flex-start;
+}
+
+/* View Logs Button */
+.btn-logs {
+    background: #2d2d2d;
+    color: #7ee787;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.btn-logs:hover {
+    background: #3d3d3d;
+}

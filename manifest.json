@@ -1,0 +1,29 @@
+{
+  "name": "Yaelle PMU Art - Permanent Makeup Limassol",
+  "short_name": "Yaelle PMU",
+  "description": "Premium permanent makeup studio in Limassol, Cyprus. Microblading, lip blushing & more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F4F3",
+  "theme_color": "#A07D7D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["beauty", "lifestyle", "health"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
