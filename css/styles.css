@@ -5,26 +5,26 @@
 
 /* CSS Variables */
 :root {
-    /* Primary Colors */
-    --blush-pink: #E8D5D0;
-    --blush-dark: #D4B8B0;
-    --champagne: #F5EDE8;
-    --cream: #FAF7F5;
-    --rose-gold: #B76E79;
-    --rose-gold-light: #D4A5A5;
-    --rose-gold-dark: #9A5B64;
+    /* Primary Colors - Matching Instagram branding */
+    --blush-pink: #EAD8D3;
+    --blush-dark: #D9C4BE;
+    --champagne: #F5EDEA;
+    --cream: #FBF8F7;
+    --rose-gold: #9D7B7B;
+    --rose-gold-light: #B99A9A;
+    --rose-gold-dark: #7D5F5F;
 
     /* Neutral Colors */
-    --charcoal: #2C2C2C;
-    --warm-gray: #6B6161;
-    --light-gray: #9B9191;
-    --off-white: #FDFCFB;
+    --charcoal: #3D3535;
+    --warm-gray: #6B5F5F;
+    --light-gray: #9B8F8F;
+    --off-white: #FDFBFA;
     --white: #FFFFFF;
 
     /* Accent Colors */
-    --gold: #C9A962;
-    --gold-light: #E8D5A8;
-    --success: #4CAF50;
+    --gold: #B8A078;
+    --gold-light: #D4C4A8;
+    --success: #7BA67B;
     --whatsapp: #25D366;
 
     /* Typography */
@@ -282,6 +282,27 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     align-items: flex-start;
     line-height: 1;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+    border-radius: 8px;
+    transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+.navbar.scrolled .logo-img {
+    height: 42px;
+}
+
+.footer-logo-img {
+    height: 70px;
+    border-radius: 10px;
 }
 
 .logo-text {
