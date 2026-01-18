@@ -5,26 +5,26 @@
 
 /* CSS Variables */
 :root {
-    /* Primary Colors - Matching Instagram branding */
-    --blush-pink: #EAD8D3;
-    --blush-dark: #D9C4BE;
-    --champagne: #F5EDEA;
-    --cream: #FBF8F7;
-    --rose-gold: #9D7B7B;
-    --rose-gold-light: #B99A9A;
-    --rose-gold-dark: #7D5F5F;
+    /* Primary Colors - Matching Instagram branding exactly */
+    --blush-pink: #E8DCD9;
+    --blush-dark: #D4C5C1;
+    --champagne: #F2EAE8;
+    --cream: #F8F4F3;
+    --rose-gold: #A07D7D;
+    --rose-gold-light: #B89999;
+    --rose-gold-dark: #8A6B6B;
 
     /* Neutral Colors */
-    --charcoal: #3D3535;
-    --warm-gray: #6B5F5F;
-    --light-gray: #9B8F8F;
-    --off-white: #FDFBFA;
+    --charcoal: #4A3F3F;
+    --warm-gray: #7A6E6E;
+    --light-gray: #A89E9E;
+    --off-white: #FAF7F6;
     --white: #FFFFFF;
 
     /* Accent Colors */
-    --gold: #B8A078;
-    --gold-light: #D4C4A8;
-    --success: #7BA67B;
+    --gold: #B09080;
+    --gold-light: #C8B8A8;
+    --success: #8AAA8A;
     --whatsapp: #25D366;
 
     /* Typography */
