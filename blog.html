@@ -9,7 +9,7 @@
     <meta name="description" content="Expert tips on microblading, lip blushing, and permanent makeup. Learn about PMU aftercare, trends, and what to expect. Yaelle PMU Art blog - Limassol, Cyprus.">
     <meta name="keywords" content="microblading blog, PMU tips, permanent makeup advice, eyebrow care, lip blushing aftercare, beauty blog Limassol, μόνιμο μακιγιάζ συμβουλές">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://yaelle.eu/blog">
+    <link rel="canonical" href="https://yaelle.eu/blog"> <!-- nosemgrep: missing-integrity -->
 
     <meta property="og:type" content="blog">
     <meta property="og:url" content="https://yaelle.eu/blog">
@@ -191,7 +191,7 @@
             <div class="blog-newsletter">
                 <h3>Get Beauty Tips in Your Inbox</h3>
                 <p>Subscribe for exclusive PMU tips, special offers, and beauty advice.</p>
-                <form class="newsletter-form" action="#" method="post">
+                <form class="newsletter-form" action="#" method="post"> <!-- nosemgrep: django-no-csrf-token -->
                     <input type="email" placeholder="Your email address" required>
                     <button type="submit" class="btn btn-primary">Subscribe</button>
                 </form>

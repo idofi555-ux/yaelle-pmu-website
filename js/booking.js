@@ -234,12 +234,12 @@
         const formattedDate = YaelleUtils.formatDate ? YaelleUtils.formatDate(appointment.date) : appointment.date;
         const formattedTime = YaelleUtils.formatTime ? YaelleUtils.formatTime(appointment.time) : appointment.time;
 
-        details.innerHTML =
+        safeSetHTML(details, 
             '<p><strong>Service:</strong> ' + (service ? service.name : appointment.service) + '</p>' +
             '<p><strong>Date:</strong> ' + formattedDate + '</p>' +
             '<p><strong>Time:</strong> ' + formattedTime + '</p>' +
             '<p><strong>Name:</strong> ' + appointment.firstName + ' ' + appointment.lastName + '</p>' +
-            '<p><strong>Email:</strong> ' + appointment.email + '</p>';
+            '<p><strong>Email:</strong> ' + appointment.email + '</p>');
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';

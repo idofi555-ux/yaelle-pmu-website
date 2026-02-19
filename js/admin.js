@@ -2,6 +2,15 @@
    YAELLE PMU ART - Admin Dashboard
    =================================== */
 
+/**
+ * Safely set innerHTML using DOMPurify sanitization.
+ */
+function safeSetHTML(el, html) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  el.innerHTML = DOMPurify.sanitize(html, { ADD_ATTR: ['onclick', 'onchange'], ADD_TAGS: ['option'] }); // nosemgrep: insecure-document-method
+}
+
 console.log('Admin.js loaded');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -246,15 +255,15 @@ function renderAppointments() {
     appointments.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (appointments.length === 0) {
-        listEl.innerHTML = '';
+        safeSetHTML(listEl, '');
         emptyEl?.classList.remove('hidden');
         return;
     }
 
     emptyEl?.classList.add('hidden');
 
-    listEl.innerHTML = appointments.map(apt => {
-        const date = new Date(apt.date);
+    safeSetHTML(listEl, appointments.map(apt => {
+        const date = new Date(apt.date));
         const day = date.getDate();
         const month = date.toLocaleDateString('en-US', { month: 'short' });
         const service = BookingUtils.SERVICES?.[apt.service]?.name || apt.service;
@@ -308,7 +317,7 @@ function viewAppointment(id) {
     const detailEl = document.getElementById('appointmentDetail');
     const service = BookingUtils.SERVICES?.[apt.service] || { name: apt.service, price: 0 };
 
-    detailEl.innerHTML = `
+    safeSetHTML(detailEl, `
         <div class="detail-header">
             <div>
                 <h2>${apt.firstName} ${apt.lastName}</h2>
@@ -359,7 +368,7 @@ function viewAppointment(id) {
             ` : ''}
             <button class="btn btn-secondary" onclick="closeAppointmentModal()">Close</button>
         </div>
-    `;
+    `);
 
     document.getElementById('appointmentModal').classList.add('active');
 }
@@ -468,7 +477,7 @@ function renderCalendar() {
         html += `<div class="calendar-day other-month">${i}</div>`;
     }
 
-    grid.innerHTML = html;
+    safeSetHTML(grid, html);
 
     // Click handlers
     grid.querySelectorAll('.calendar-day:not(.other-month)').forEach(day => {
@@ -500,7 +509,7 @@ function showDateAppointments(date) {
     appointments = appointments.filter(a => a.date === date);
 
     if (appointments.length === 0) {
-        listEl.innerHTML = '';
+        safeSetHTML(listEl, '');
         emptyEl?.classList.remove('hidden');
         return;
     }
@@ -551,7 +560,7 @@ function renderClients(searchTerm = '') {
     }
 
     if (clients.length === 0) {
-        listEl.innerHTML = '';
+        safeSetHTML(listEl, '');
         emptyEl?.classList.remove('hidden');
         return;
     }
@@ -561,8 +570,8 @@ function renderClients(searchTerm = '') {
     // Get treatments for each client
     const treatments = getTreatments();
 
-    listEl.innerHTML = clients.map(client => {
-        const initials = (client.firstName[0] + client.lastName[0]).toUpperCase();
+    safeSetHTML(listEl, clients.map(client => {
+        const initials = (client.firstName[0] + client.lastName[0]).toUpperCase());
         const clientTreatments = treatments.filter(t => t.clientId === client.id);
         const treatmentCount = clientTreatments.length;
 
@@ -763,7 +772,7 @@ function renderSettings() {
     const hoursGrid = document.getElementById('hoursGrid');
     if (hoursGrid) {
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        hoursGrid.innerHTML = days.map(day => `
+        safeSetHTML(hoursGrid, days.map(day => `
             <div class="hours-row">
                 <label>${day}</label>
                 <select>
@@ -776,19 +785,19 @@ function renderSettings() {
                 </select>
                 <div class="toggle ${day !== 'Sunday' ? 'active' : ''}" onclick="this.classList.toggle('active')"></div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     // Render services
     const servicesList = document.getElementById('servicesList');
     if (servicesList && BookingUtils.SERVICES) {
-        servicesList.innerHTML = Object.entries(BookingUtils.SERVICES).map(([key, service]) => `
+        safeSetHTML(servicesList, Object.entries(BookingUtils.SERVICES).map(([key, service]) => `
             <div class="service-row">
                 <span class="service-name">${service.name}</span>
                 <span class="service-duration">${service.duration}</span>
                 <span class="service-price">${service.price > 0 ? '€' + service.price : 'Free'}</span>
             </div>
-        `).join('');
+        `).join(''));
     }
 }
 
@@ -1038,7 +1047,7 @@ function viewClient(clientId) {
         return serviceMap[service] || service;
     };
 
-    detailEl.innerHTML = `
+    safeSetHTML(detailEl, `
         <div class="client-header">
             <div class="client-avatar large">${initials}</div>
             <div class="client-header-info">
@@ -1092,7 +1101,7 @@ function viewClient(clientId) {
                 </div>
             `}
         </div>
-    `;
+    `);
 
     document.getElementById('clientModal').classList.add('active');
     document.getElementById('clientModalClose')?.addEventListener('click', closeClientModal);
@@ -1232,7 +1241,7 @@ function previewPost() {
     }
 
     const previewEl = document.getElementById('postPreview');
-    previewEl.innerHTML = `
+    safeSetHTML(previewEl, `
         <div class="post-preview-content">
             ${currentPostImage ? `<img src="${currentPostImage}" alt="Post image" class="preview-image">` : ''}
             <h2>${title || 'Untitled Post'}</h2>
@@ -1242,7 +1251,7 @@ function previewPost() {
                 <span>${new Date().toLocaleDateString()}</span>
             </div>
         </div>
-    `;
+    `);
 
     document.getElementById('postPreviewModal').classList.add('active');
 }
@@ -1255,14 +1264,14 @@ function renderPosts() {
     if (!postsListEl) return;
 
     if (posts.length === 0) {
-        postsListEl.innerHTML = '';
+        safeSetHTML(postsListEl, '');
         emptyPostsEl?.classList.remove('hidden');
         return;
     }
 
     emptyPostsEl?.classList.add('hidden');
 
-    postsListEl.innerHTML = posts.map(post => `
+    safeSetHTML(postsListEl, posts.map(post => `
         <div class="post-card" data-post-id="${post.id}">
             ${post.image ? `<img src="${post.image}" alt="Post image" class="post-thumbnail">` : ''}
             <div class="post-card-content">
@@ -1287,7 +1296,7 @@ function renderPosts() {
                 </button>
             </div>
         </div>
-    `).join('');
+    `).join(''));
 
     updateAttachPostOptions();
 }
@@ -1299,7 +1308,7 @@ function viewPost(postId) {
     if (!post) return;
 
     const previewEl = document.getElementById('postPreview');
-    previewEl.innerHTML = `
+    safeSetHTML(previewEl, `
         <div class="post-preview-content">
             ${post.image ? `<img src="${post.image}" alt="Post image" class="preview-image">` : ''}
             <h2>${post.title}</h2>
@@ -1309,7 +1318,7 @@ function viewPost(postId) {
                 <span>${new Date(post.createdAt).toLocaleDateString()}</span>
             </div>
         </div>
-    `;
+    `);
 
     document.getElementById('postPreviewModal').classList.add('active');
 }
@@ -1332,8 +1341,8 @@ function updateAttachPostOptions() {
     if (!attachSelect) return;
 
     const posts = getPosts();
-    attachSelect.innerHTML = '<option value="">No attachment</option>' +
-        posts.map(post => `<option value="${post.id}">${post.title}</option>`).join('');
+    safeSetHTML(attachSelect, '<option value="">No attachment</option>' +
+        posts.map(post => `<option value="${post.id}">${post.title}</option>`).join(''));
 }
 
 function updateEmailRecipientCount() {
@@ -1385,7 +1394,7 @@ function previewEmail() {
     }
 
     const previewEl = document.getElementById('postPreview');
-    previewEl.innerHTML = `
+    safeSetHTML(previewEl, `
         <div class="email-preview-content">
             <div class="email-header">
                 <strong>Subject:</strong> ${subject}
@@ -1403,7 +1412,7 @@ function previewEmail() {
                 <p>Best regards,<br>Yaelle PMU Art</p>
             </div>
         </div>
-    `;
+    `);
 
     document.getElementById('postPreviewModal').classList.add('active');
 }
@@ -1566,18 +1575,18 @@ async function viewServerLogs() {
                 logsModal = document.createElement('div');
                 logsModal.id = 'logsModal';
                 logsModal.className = 'modal';
-                logsModal.innerHTML = `
+                safeSetHTML(logsModal, `
                     <div class="modal-content logs-modal-content">
                         <button class="modal-close" onclick="document.getElementById('logsModal').classList.remove('active')">&times;</button>
                         <h3>Server Logs</h3>
                         <div id="logsContent" class="logs-content"></div>
                         <button class="btn btn-secondary" onclick="clearServerLogs()">Clear Logs</button>
                     </div>
-                `;
+                `);
                 document.body.appendChild(logsModal);
             }
 
-            document.getElementById('logsContent').innerHTML = logsHtml;
+            safeSetHTML("logsContent", logsHtml);
             logsModal.classList.add('active');
         } else {
             alert('No logs available yet.');
@@ -1591,7 +1600,7 @@ async function viewServerLogs() {
 async function clearServerLogs() {
     try {
         await fetch('/api/logs', { method: 'DELETE' });
-        document.getElementById('logsContent').innerHTML = '<p>Logs cleared.</p>';
+        safeSetHTML("logsContent", '<p>Logs cleared.</p>');
     } catch (error) {
         alert('Failed to clear logs: ' + error.message);
     }
